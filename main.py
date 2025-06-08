@@ -199,16 +199,27 @@ def prediction_page():
     processed_input_df = preprocess_input(input_df)
 
     st.subheader("Pilih Model untuk Prediksi:")
-    selected_model = st.selectbox("Model", ["SVM", "Decision Tree", "Random Forest", "XGBoost"])
+    selected_model = st.selectbox("Model", ["SVM 82%", "Decision Tree 74%", "Random Forest 82%", "XGBoost 78%"])
 
     if st.button("Prediksi"):
-        if selected_model == "SVM":
+        if selected_model == "SVM 82%":
             prediction = best_svm_model.predict(processed_input_df)
-        elif selected_model == "Decision Tree":
+        elif selected_model == "Decision Tree 74%":
             prediction = best_dt_model.predict(processed_input_df)
-        elif selected_model == "Random Forest":
+        elif selected_model == "Random Forest 82%":
             prediction = best_rf_model.predict(processed_input_df)
-        elif selected_model == "XGBoost":
+        elif selected_model == "XGBoost 78%":
+            prediction = best_xgb_model.predict(processed_input_df)    st.subheader("Pilih Model untuk Prediksi:")
+    selected_model = st.selectbox("Model", ["SVM 82%", "Decision Tree 74%", "Random Forest 82%", "XGBoost 78%"])
+
+    if st.button("Prediksi"):
+        if selected_model == "SVM 82%":
+            prediction = best_svm_model.predict(processed_input_df)
+        elif selected_model == "Decision Tree 74%":
+            prediction = best_dt_model.predict(processed_input_df)
+        elif selected_model == "Random Forest 82%":
+            prediction = best_rf_model.predict(processed_input_df)
+        elif selected_model == "XGBoost 78%":
             prediction = best_xgb_model.predict(processed_input_df)
 
         prediction_label = le_target.inverse_transform(prediction)[0]
