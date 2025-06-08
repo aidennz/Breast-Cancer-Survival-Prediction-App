@@ -212,9 +212,13 @@ def prediction_page():
             prediction = best_xgb_model.predict(processed_input_df)
 
         prediction_label = le_target.inverse_transform(prediction)[0]
-
-        st.subheader("Hasil Prediksi:")
-        st.write(f"Prediksi Model {selected_model}: **{prediction_label}**")
+        
+        st.markdown(f"""
+        <div style="background-color:#e6f7ff; margin-bottom:10px; padding:20px; border-radius:10px; border: 1px solid #91d5ff">
+            <h3 style="color:#0050b3;">Hasil Prediksi Model {selected_model}</h3>
+            <p style="font-size:20px;"><strong>{prediction_label}</strong></p>
+        </div>
+        """, unsafe_allow_html=True)
 
     if st.button("Kembali ke Layar Awal"):
         st.session_state.page = 'start_screen'
