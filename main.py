@@ -223,6 +223,7 @@ def prediction_page():
 
     if st.button("Kembali ke Layar Awal"):
         st.session_state.page = 'start_screen'
+        st.rerun()
 
 # --- Main application logic ---
 def start_screen():
@@ -234,6 +235,7 @@ def start_screen():
     ''', unsafe_allow_html=True)
     if st.button("Mulai Prediksi"):
         st.session_state.page = 'prediction_page'
+        st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
 
