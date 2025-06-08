@@ -1,4 +1,5 @@
 pandas
-pickle
+xgboost
 scikit-learn
 streamlit
+pickle
