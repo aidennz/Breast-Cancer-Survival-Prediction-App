@@ -209,27 +209,17 @@ def prediction_page():
         elif selected_model == "Random Forest 82%":
             prediction = best_rf_model.predict(processed_input_df)
         elif selected_model == "XGBoost 78%":
-            prediction = best_xgb_model.predict(processed_input_df)    st.subheader("Pilih Model untuk Prediksi:")
-    selected_model = st.selectbox("Model", ["SVM 82%", "Decision Tree 74%", "Random Forest 82%", "XGBoost 78%"])
-
-    if st.button("Prediksi"):
-        if selected_model == "SVM 82%":
-            prediction = best_svm_model.predict(processed_input_df)
-        elif selected_model == "Decision Tree 74%":
-            prediction = best_dt_model.predict(processed_input_df)
-        elif selected_model == "Random Forest 82%":
-            prediction = best_rf_model.predict(processed_input_df)
-        elif selected_model == "XGBoost 78%":
             prediction = best_xgb_model.predict(processed_input_df)
 
         prediction_label = le_target.inverse_transform(prediction)[0]
-        
+
         st.markdown(f"""
         <div style="background-color:#e6f7ff; margin-bottom:10px; padding:20px; border-radius:10px; border: 1px solid #91d5ff">
             <h3 style="color:#0050b3;">Hasil Prediksi Model {selected_model}</h3>
             <p style="font-size:20px;"><strong>{prediction_label}</strong></p>
         </div>
         """, unsafe_allow_html=True)
+
 
     if st.button("Kembali ke Layar Awal"):
         st.session_state.page = 'start_screen'
