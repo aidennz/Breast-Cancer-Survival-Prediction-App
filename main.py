@@ -123,13 +123,6 @@ def preprocess_input(input_df):
     # Concatenate processed_df with encoded_df
     processed_df = pd.concat([processed_df, encoded_df], axis=1)
 
-
-    # Ensure column order matches the training data
-    # This list must be exactly the same as the columns used to train your model,
-    # in the exact order, AFTER preprocessing.
-    # Based on your notebook, this should include the original numerical/label encoded
-    # columns plus the new one-hot encoded columns.
-
     # Recreate this list based on your preprocessed training data's columns
     processed_feature_columns_order = [
         'Age', 'Gender', 'Protein1', 'Protein2', 'Protein3', 'Protein4', 'Tumour_Stage',
