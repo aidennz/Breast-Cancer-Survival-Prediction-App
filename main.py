@@ -47,32 +47,58 @@ st.markdown(page_bg_img, unsafe_allow_html=True)
 
 # Load models
 try:
-    with open('best_svm_model.pkl', 'rb') as f:
+    with open('model_svm.pkl', 'rb') as f:
         best_svm_model = pickle.load(f)
-    with open('best_dt_model.pkl', 'rb') as f:
+    with open('model_dt.pkl', 'rb') as f:
         best_dt_model = pickle.load(f)
-    with open('best_rf_model.pkl', 'rb') as f:
+    with open('model_rf.pkl', 'rb') as f:
         best_rf_model = pickle.load(f)
-    with open('best_xgb_model.pkl', 'rb') as f:
+    with open('model_xgb.pkl', 'rb') as f:
         best_xgb_model = pickle.load(f)
 except FileNotFoundError:
     st.error("Pastikan file model (.pkl) tersedia di direktori yang sama.")
     st.stop()
 
-# Load encoders
+# Load encoders and scaler
 try:
-    with open('label_encoder_gender.pkl', 'rb') as f:
-        label_encoder_gender = pickle.load(f)
-    with open('label_encoder_tumour_stage.pkl', 'rb') as f:
-        label_encoder_tumour_stage = pickle.load(f)
-    with open('label_encoder_er_status.pkl', 'rb') as f:
+    with open('3Gene.pkl', 'rb') as f:
+        label_encoder_3Gene = pickle.load(f)
+    with open('CancerType.pkl', 'rb') as f:
+        label_encoder_cancer_type = pickle.load(f)
+    with open('Cellularity.pkl', 'rb') as f:
+        label_encoder_cellularity = pickle.load(f)
+    with open('Chemotherapy.pkl', 'rb') as f:
+        label_encoder_chemotherapy = pickle.load(f)
+    with open('ERStatus.pkl', 'rb') as f:
         label_encoder_er_status = pickle.load(f)
-    with open('label_encoder_pr_status.pkl', 'rb') as f:
-        label_encoder_pr_status = pickle.load(f)
-    with open('label_encoder_her2_status.pkl', 'rb') as f:
+    with open('ERstatusbyIHC.pkl', 'rb') as f:
+        label_encoder_er_status_by_ihc = pickle.load(f)
+    with open('HER2Status.pkl', 'rb') as f:
         label_encoder_her2_status = pickle.load(f)
-    with open('label_encoder_target.pkl', 'rb') as f:
-        le_target = pickle.load(f)
+    with open('HER2statusbySNP6.pkl', 'rb') as f:
+        label_encoder_her2_status_by_snp6 = pickle.load(f)
+    with open('HormoneTherapy.pkl', 'rb') as f:
+        label_encoder_hormone_therapy = pickle.load(f)
+    with open('InferredMenopausal.pkl', 'rb') as f:
+        label_encoder_inferred_menopausal = pickle.load(f)
+    with open('IntegrativeCluster.pkl', 'rb') as f:
+        label_encoder_intergrative_cluster = pickle.load(f)
+    with open('PRStatus.pkl', 'rb') as f:
+        label_encoder_pr_status = pickle.load(f)
+    with open('Pam50.pkl', 'rb') as f:
+        label_encoder_pam50 = pickle.load(f)
+    with open('PrimaryTumor.pkl', 'rb') as f:
+        label_encoder_primary_tumor = pickle.load(f)
+    with open('RadioTherapy.pkl', 'rb') as f:
+        label_encoder_radio_therapy = pickle.load(f)
+    with open('RelapseFree.pkl', 'rb') as f:
+        label_encoder_relapse_free = pickle.load(f)
+    with open('TumorOther.pkl', 'rb') as f:
+        label_encoder_tumor_other = pickle.load(f)
+    with open('TypeofBreastSurgery.pkl', 'rb') as f:
+        label_encoder_type_of_breast_surgery = pickle.load(f)
+    with open('scaler.pkl', 'rb') as f:
+        scaler = pickle.load(f)
 except FileNotFoundError:
     st.error("Pastikan file encoder (.pkl) tersedia.")
     st.stop()
@@ -95,9 +121,24 @@ def preprocess_input(input_df):
     processed_df = input_df.copy()
     
     # Label encode categorical features
-    for feature in categorical_features:
-        if feature in label_encoders:
-            processed_df[feature] = label_encoders[feature].transform(processed_df[feature])
+    processed_df['3-Gene classifier subtype'] = label_encoder_3Gene.transform(processed_df['3-Gene classifier subtype'])
+    processed_df['Cancer Type Detailed'] = label_encoder_cancer_type.transform(processed_df['Cancer Type Detailed'])
+    processed_df['Cellularity'] = label_encoder_cellularity.transform(processed_df['Cellularity'])
+    processed_df['Chemotherapy'] = label_encoder_chemotherapy.transform(processed_df['Chemotherapy'])
+    processed_df['ER Status'] = label_encoder_er_status.transform(processed_df['ER Status'])
+    processed_df['ER status measured by IHC'] = label_encoder_er_status_by_ihc.transform(processed_df['ER status measured by IHC'])
+    processed_df['HER2 Status'] = label_encoder_her2_status.transform(processed_df['HER2 Status'])
+    processed_df['HER2 status measured by SNP6'] = label_encoder_her2_status_by_snp6.transform(processed_df['HER2 status measured by SNP6'])
+    processed_df['Hormone Therapy'] = label_encoder_hormone_therapy.transform(processed_df['Hormone Therapy'])
+    processed_df['Inferred Menopausal State'] = label_encoder_inferred_menopausal.transform(processed_df['Inferred Menopausal State'])
+    processed_df['Integrative Cluster'] = label_encoder_intergrative_cluster.transform(processed_df['Integrative Cluster'])
+    processed_df['PR Status'] = label_encoder_pr_status.transform(processed_df['PR Status'])
+    processed_df['Pam50 + Claudin-low subtype'] = label_encoder_pam50.transform(processed_df['Pam50 + Claudin-low subtype'])
+    processed_df['Primary Tumor Laterality'] = label_encoder_primary_tumor.transform(processed_df['Primary Tumor Laterality'])
+    processed_df['Radio Therapy'] = label_encoder_radio_therapy.transform(processed_df['Radio Therapy'])
+    processed_df['Relapse Free Status'] = label_encoder_relapse_free.transform(processed_df['Relapse Free Status'])
+    processed_df['Tumor Other Histologic Subtype'] = label_encoder_tumor_other.transform(processed_df['Tumor Other Histologic Subtype'])
+    processed_df['Type of Breast Surgery'] = label_encoder_type_of_breast_surgery.transform(processed_df['Type of Breast Surgery'])
 
     # Scale numerical features
     processed_df[numerical_features] = scaler.transform(processed_df[numerical_features])
@@ -111,53 +152,53 @@ def prediction_page():
     inputs = {}
     
     # --- Numerical Features ---
-    inputs['Age at Diagnosis'] = st.sidebar.number_input("Age at Diagnosis", min_value=20, max_value=100, value=60)
-    inputs['Cohort'] = st.sidebar.number_input("Cohort", min_value=1900, max_value=2100, value=2000)
-    inputs['Neoplasm Histologic Grade'] = st.sidebar.number_input("Neoplasm Histologic Grade", min_value=1, max_value=5, value=2)
-    inputs['Lymph nodes examined positive'] = st.sidebar.number_input("Positive Lymph Nodes", min_value=0, max_value=50, value=0)
-    inputs['Mutation Count'] = st.sidebar.number_input("Mutation Count", min_value=0, max_value=100, value=5)
+    inputs['Age at Diagnosis'] = st.sidebar.number_input("Age at Diagnosis", min_value=20.0, max_value=100.0, value=60.0, step=1)
+    inputs['Cohort'] = st.sidebar.number_input("Cohort", min_value=1.0, max_value=5.0, value=3.0, step=1)
+    inputs['Neoplasm Histologic Grade'] = st.sidebar.number_input("Neoplasm Histologic Grade", min_value=1.0, max_value=5.0, value=2.0, step=1)
+    inputs['Lymph nodes examined positive'] = st.sidebar.number_input("Positive Lymph Nodes", min_value=0.0, max_value=50.0, value=0.0, step=1)
+    inputs['Mutation Count'] = st.sidebar.number_input("Mutation Count", min_value=1.0, max_value=100.0, value=5.0, step=1)
     inputs['Nottingham prognostic index'] = st.sidebar.number_input("Nottingham Prognostic Index", min_value=1.0, max_value=10.0, value=3.0, step=0.1)
-    inputs['Overall Survival (Months)'] = st.sidebar.number_input("Overall Survival (Months)", min_value=0, max_value=300, value=100)
-    inputs['Tumor Size'] = st.sidebar.number_input("Tumor Size (mm)", min_value=1, max_value=200, value=30)
-    inputs['Tumor Stage'] = st.sidebar.number_input("Tumor Stage (angka)", min_value=0.0, max_value=10.0, value=1.0, step=0.1)
+    inputs['Overall Survival (Months)'] = st.sidebar.number_input("Overall Survival (Months)", min_value=0, max_value=400, value=100, step=1)
+    inputs['Tumor Size'] = st.sidebar.number_input("Tumor Size (mm)", min_value=1.0, max_value=200.0, value=30.0, step=1)
+    inputs['Tumor Stage'] = st.sidebar.number_input("Tumor Stage (angka)", min_value=0.0, max_value=4.0, value=1.0, step=1)
 
     # --- Categorical Features ---
     inputs['Type of Breast Surgery'] = st.sidebar.selectbox(
         "Breast Surgery Type", ['Mastectomy', 'Breast Conserving']
     )
     inputs['Cancer Type Detailed'] = st.sidebar.selectbox(
-        "Cancer Type Detailed", ['Ductal/NST', 'Lobular', 'Other']
+        "Cancer Type Detailed", ['Breast Invasive Ductal Carcinoma', 'Breast Mixed Ductal and Lobular Carcinoma', 'Breast Invasive Lobular Carcinoma', 'Invasive Breast Carcinoma', 'Breast Invasive Mixed Mucinous Carcinoma', 'Breast Angiosarcoma', 'Breast', 'Metaplastic Breast Cancer']
     )
     inputs['Cellularity'] = st.sidebar.selectbox("Cellularity", ['High', 'Moderate', 'Low'])
     inputs['Chemotherapy'] = st.sidebar.selectbox("Chemotherapy", ['No', 'Yes'])
     inputs['Pam50 + Claudin-low subtype'] = st.sidebar.selectbox(
-        "PAM50 Subtype", ['claudin-low', 'LumA', 'LumB', 'Normal', 'Her2', 'Basal']
+        "PAM50 Subtype", ['claudin-low', 'LumA', 'LumB', 'Normal', 'Her2', 'Basal', 'NC]
     )
     inputs['ER status measured by IHC'] = st.sidebar.selectbox(
         "ER status measured by IHC", ['Positive', 'Negative']
     )
     inputs['ER Status'] = st.sidebar.selectbox("ER Status", ['Positive', 'Negative'])
     inputs['HER2 status measured by SNP6'] = st.sidebar.selectbox(
-        "HER2 status measured by SNP6", ['Negative', 'Positive']
+        "HER2 status measured by SNP6", ['Neutral', 'Loss', 'Gain', 'Undef']
     )
     inputs['HER2 Status'] = st.sidebar.selectbox("HER2 Status", ['Negative', 'Positive'])
     inputs['Tumor Other Histologic Subtype'] = st.sidebar.selectbox(
-        "Other Histologic Subtype", ['None', 'Other Subtype']  # Ganti jika tahu isi yang valid
+        "Other Histologic Subtype", ['Ductal/NST', 'Mixed', 'Lobular', 'Tubular/ cribriform', 'Mucinous', 'Medullary', 'Other', 'Metaplastic']
     )
     inputs['Hormone Therapy'] = st.sidebar.selectbox("Hormone Therapy", ['Yes', 'No'])
     inputs['Inferred Menopausal State'] = st.sidebar.selectbox(
         "Menopausal State", ['Post', 'Pre']
     )
     inputs['Integrative Cluster'] = st.sidebar.selectbox(
-        "Integrative Cluster", ['IntClust 1', 'IntClust 2', 'IntClust 3', 'IntClust 4', 'IntClust 5', 'IntClust 6', 'IntClust 7', 'IntClust 8', 'IntClust 9', 'IntClust 10']
+        "Integrative Cluster", ['4ER+', '3', '9', '7', '4ER-', '5', '8', '10', '1', '2', '6']
     )
     inputs['Primary Tumor Laterality'] = st.sidebar.selectbox(
-        "Primary Tumor Laterality", ['Left', 'Right']
+        "Primary Tumor Laterality", ['Right', 'Left']
     )
     inputs['PR Status'] = st.sidebar.selectbox("PR Status", ['Negative', 'Positive'])
     inputs['Radio Therapy'] = st.sidebar.selectbox("Radio Therapy", ['Yes', 'No'])
     inputs['Relapse Free Status'] = st.sidebar.selectbox(
-        "Relapse Free Status", ['Relapse Free Status:1', 'Relapse Free Status:0']
+        "Relapse Free Status", ['Not Recurred', 'Recurred']
     )
     inputs['3-Gene classifier subtype'] = st.sidebar.selectbox(
         "3-Gene Subtype", ['ER-/HER2-', 'ER+/HER2- High Prolif', 'ER+/HER2- Low Prolif', 'HER2+']
