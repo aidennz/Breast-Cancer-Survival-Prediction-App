@@ -151,18 +151,7 @@ def prediction_page():
 
     inputs = {}
     
-    # --- Numerical Features ---
     inputs['Age at Diagnosis'] = st.number_input("Age at Diagnosis", min_value=20.0, max_value=100.0, value=60.0, step=1.0)
-    inputs['Cohort'] = st.number_input("Cohort", min_value=1.0, max_value=5.0, value=3.0, step=1.0)
-    inputs['Neoplasm Histologic Grade'] = st.number_input("Neoplasm Histologic Grade", min_value=1.0, max_value=5.0, value=2.0, step=1.0)
-    inputs['Lymph nodes examined positive'] = st.number_input("Positive Lymph Nodes", min_value=0.0, max_value=50.0, value=0.0, step=1.0)
-    inputs['Mutation Count'] = st.number_input("Mutation Count", min_value=1.0, max_value=100.0, value=5.0, step=1.0)
-    inputs['Nottingham prognostic index'] = st.number_input("Nottingham Prognostic Index", min_value=1.0, max_value=10.0, value=3.0, step=0.1)
-    inputs['Overall Survival (Months)'] = st.number_input("Overall Survival (Months)", min_value=0, max_value=400, value=100, step=1)
-    inputs['Tumor Size'] = st.number_input("Tumor Size (mm)", min_value=1.0, max_value=200.0, value=30.0, step=1.0)
-    inputs['Tumor Stage'] = st.number_input("Tumor Stage (angka)", min_value=0.0, max_value=4.0, value=1.0, step=1.0)
-
-    # --- Categorical Features ---
     inputs['Type of Breast Surgery'] = st.selectbox(
         "Breast Surgery Type", ['Mastectomy', 'Breast Conserving']
     )
@@ -174,10 +163,12 @@ def prediction_page():
     inputs['Pam50 + Claudin-low subtype'] = st.selectbox(
         "PAM50 Subtype", ['claudin-low', 'LumA', 'LumB', 'Normal', 'Her2', 'Basal', 'NC']
     )
+    inputs['Cohort'] = st.number_input("Cohort", min_value=1.0, max_value=5.0, value=3.0, step=1.0)
     inputs['ER status measured by IHC'] = st.selectbox(
         "ER status measured by IHC", ['Positve', 'Negative']
     )
     inputs['ER Status'] = st.selectbox("ER Status", ['Positive', 'Negative'])
+    inputs['Neoplasm Histologic Grade'] = st.number_input("Neoplasm Histologic Grade", min_value=1.0, max_value=5.0, value=2.0, step=1.0)
     inputs['HER2 status measured by SNP6'] = st.selectbox(
         "HER2 status measured by SNP6", ['Neutral', 'Loss', 'Gain', 'Undef']
     )
@@ -195,15 +186,20 @@ def prediction_page():
     inputs['Primary Tumor Laterality'] = st.selectbox(
         "Primary Tumor Laterality", ['Right', 'Left']
     )
+    inputs['Lymph nodes examined positive'] = st.number_input("Positive Lymph Nodes", min_value=0.0, max_value=50.0, value=0.0, step=1.0)
+    inputs['Mutation Count'] = st.number_input("Mutation Count", min_value=1.0, max_value=100.0, value=5.0, step=1.0)
+    inputs['Nottingham prognostic index'] = st.number_input("Nottingham Prognostic Index", min_value=1.0, max_value=10.0, value=3.0, step=0.1)
+    inputs['Overall Survival (Months)'] = st.number_input("Overall Survival (Months)", min_value=0, max_value=400, value=100, step=1)
     inputs['PR Status'] = st.selectbox("PR Status", ['Negative', 'Positive'])
     inputs['Radio Therapy'] = st.selectbox("Radio Therapy", ['Yes', 'No'])
     inputs['Relapse Free Status'] = st.selectbox(
-        "Relapse Free Status", ['Not Recurred', 'Recurred']
-    )
     inputs['3-Gene classifier subtype'] = st.selectbox(
         "3-Gene Subtype", ['ER-/HER2-', 'ER+/HER2- High Prolif', 'ER+/HER2- Low Prolif', 'HER2+']
     )
-
+    inputs['Tumor Size'] = st.number_input("Tumor Size (mm)", min_value=1.0, max_value=200.0, value=30.0, step=1.0)
+    inputs['Tumor Stage'] = st.number_input("Tumor Stage (angka)", min_value=0.0, max_value=4.0, value=1.0, step=1.0)
+        "Relapse Free Status", ['Not Recurred', 'Recurred']
+    )
     # Convert dictionary to DataFrame
     input_df = pd.DataFrame([inputs])
 
