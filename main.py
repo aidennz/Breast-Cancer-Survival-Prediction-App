@@ -152,15 +152,15 @@ def prediction_page():
     inputs = {}
     
     # --- Numerical Features ---
-    inputs['Age at Diagnosis'] = st.number_input("Age at Diagnosis", min_value=20.0, max_value=100.0, value=60.0, step=1)
-    inputs['Cohort'] = st.number_input("Cohort", min_value=1.0, max_value=5.0, value=3.0, step=1)
-    inputs['Neoplasm Histologic Grade'] = st.number_input("Neoplasm Histologic Grade", min_value=1.0, max_value=5.0, value=2.0, step=1)
-    inputs['Lymph nodes examined positive'] = st.number_input("Positive Lymph Nodes", min_value=0.0, max_value=50.0, value=0.0, step=1)
-    inputs['Mutation Count'] = st.number_input("Mutation Count", min_value=1.0, max_value=100.0, value=5.0, step=1)
+    inputs['Age at Diagnosis'] = st.number_input("Age at Diagnosis", min_value=20.0, max_value=100.0, value=60.0, step=1.0)
+    inputs['Cohort'] = st.number_input("Cohort", min_value=1.0, max_value=5.0, value=3.0, step=1.0)
+    inputs['Neoplasm Histologic Grade'] = st.number_input("Neoplasm Histologic Grade", min_value=1.0, max_value=5.0, value=2.0, step=1.0)
+    inputs['Lymph nodes examined positive'] = st.number_input("Positive Lymph Nodes", min_value=0.0, max_value=50.0, value=0.0, step=1.0)
+    inputs['Mutation Count'] = st.number_input("Mutation Count", min_value=1.0, max_value=100.0, value=5.0, step=1.0)
     inputs['Nottingham prognostic index'] = st.number_input("Nottingham Prognostic Index", min_value=1.0, max_value=10.0, value=3.0, step=0.1)
-    inputs['Overall Survival (Months)'] = st.number_input("Overall Survival (Months)", min_value=0, max_value=400, value=100, step=1)
-    inputs['Tumor Size'] = st.number_input("Tumor Size (mm)", min_value=1.0, max_value=200.0, value=30.0, step=1)
-    inputs['Tumor Stage'] = st.number_input("Tumor Stage (angka)", min_value=0.0, max_value=4.0, value=1.0, step=1)
+    inputs['Overall Survival (Months)'] = st.number_input("Overall Survival (Months)", min_value=0, max_value=400, value=100, step=1.0)
+    inputs['Tumor Size'] = st.number_input("Tumor Size (mm)", min_value=1.0, max_value=200.0, value=30.0, step=1.0)
+    inputs['Tumor Stage'] = st.number_input("Tumor Stage (angka)", min_value=0.0, max_value=4.0, value=1.0, step=1.0)
 
     # --- Categorical Features ---
     inputs['Type of Breast Surgery'] = st.selectbox(
