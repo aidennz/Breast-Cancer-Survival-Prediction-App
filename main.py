@@ -139,9 +139,6 @@ def preprocess_input(input_df):
     processed_df['Radio Therapy'] = label_encoder_radio_therapy.transform(processed_df['Radio Therapy'])
     processed_df['Relapse Free Status'] = label_encoder_relapse_free.transform(processed_df['Relapse Free Status'])
     processed_df['3-Gene classifier subtype'] = label_encoder_3Gene.transform(processed_df['3-Gene classifier subtype'])
-
-    # Scale numerical features
-    processed_df[numerical_features] = scaler.transform(processed_df[numerical_features].to_numpy())
     
     return processed_df
 
