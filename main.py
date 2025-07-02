@@ -141,7 +141,7 @@ def preprocess_input(input_df):
     processed_df['3-Gene classifier subtype'] = label_encoder_3Gene.transform(processed_df['3-Gene classifier subtype'])
 
     # Scale numerical features
-    processed_df[numerical_features] = scaler.transform(processed_df[numerical_features])
+    processed_df[numerical_features] = scaler.transform(processed_df[numerical_features].to_numpy())
     
     return processed_df
 
