@@ -224,9 +224,10 @@ def prediction_page():
             prediction = best_xgb_model.predict(processed_input_df)
 
         if prediction[0] == 0:
-                result = "Living or Died of Other Causes"
-            else:
-                result = "Died of Breast Cancer"
+            result = "Living or Died of Other Causes"
+        else:
+            result = "Died of Breast Cancer"
+            
         st.markdown(f"""
         <div style="background-color:#e6f7ff; margin-bottom:10px; padding:20px; border-radius:10px; border: 1px solid #91d5ff">
             <h3 style="color:#0050b3;">Hasil Prediksi Model {selected_model}</h3>
