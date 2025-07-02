@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import pickle
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 
 page_bg_img = """
 <style>
@@ -70,137 +71,115 @@ try:
         label_encoder_pr_status = pickle.load(f)
     with open('label_encoder_her2_status.pkl', 'rb') as f:
         label_encoder_her2_status = pickle.load(f)
-    with open('onehot_encoder.pkl', 'rb') as f:
-        onehot_encoder = pickle.load(f)
     with open('label_encoder_target.pkl', 'rb') as f:
         le_target = pickle.load(f)
 except FileNotFoundError:
     st.error("Pastikan file encoder (.pkl) tersedia.")
     st.stop()
 
-# Define columns used in training (based on your notebook)
-feature_columns_order = [
-    'Age', 'Gender', 'Protein1', 'Protein2', 'Protein3', 'Protein4',
-    'Tumour_Stage', 'Histology', 'ER status', 'PR status', 'HER2 status',
-    'Surgery_type', 'Patient_Status' # Include target temporarily to define structure
+# Define columns used in training
+numerical_features = [
+    'Age at Diagnosis', 'Cohort', 'Neoplasm Histologic Grade', 'Lymph nodes examined positive', 
+    'Mutation Count', 'Nottingham prognostic index',
+    'Overall Survival (Months)', 'Tumor Size', 'Tumor Stage'
 ]
 
-# This order must match the order of features the trained models expect
-processed_feature_columns_order = [
-    'Age', 'Gender', 'Protein1', 'Protein2', 'Protein3', 'Protein4', 'Tumour_Stage',
-    'Histology_Infiltrating Ductal Carcinoma', 'Histology_Infiltrating Lobular Carcinoma', 'Histology_Mucinous Carcinoma',
-    'ER status', 'PR status', 'HER2 status',
-    'Surgery_type_Lumpectomy', 'Surgery_type_Modified Radical Mastectomy', 'Surgery_type_Other', 'Surgery_type_Simple Mastectomy'
+categorical_features = [
+    'Type of Breast Surgery', 'Cancer Type Detailed', 'Cellularity', 'Chemotherapy',
+    'Pam50 + Claudin-low subtype', 'ER status measured by IHC', 'ER Status', 'HER2 status measured by SNP6', 'HER2 Status',
+    'Tumor Other Histologic Subtype', 'Hormone Therapy', 'Inferred Menopausal State', 'Integrative Cluster', 'Primary Tumor Laterality', 'PR Status',
+    'Radio Therapy', 'Relapse Free Status', '3-Gene classifier subtype'
 ]
 
 def preprocess_input(input_df):
-    """Applies the same preprocessing steps as used during training."""
     processed_df = input_df.copy()
-
-    # Apply Label Encoding using the loaded encoder
-
-    processed_df['Gender'] = label_encoder_gender.transform(processed_df['Gender'])
-    processed_df['Tumour_Stage'] = label_encoder_tumour_stage.transform(processed_df['Tumour_Stage'])
-    processed_df['ER status'] = label_encoder_er_status.transform(processed_df['ER status'])
-    processed_df['PR status'] = label_encoder_pr_status.transform(processed_df['PR status'])
-    processed_df['HER2 status'] = label_encoder_her2_status.transform(processed_df['HER2 status'])
     
-    # Apply One-Hot Encoding using the loaded encoder
-    columns_to_onehot_encode = ['Histology', 'Surgery_type'] # Sesuai notebook Anda
+    # Label encode categorical features
+    for feature in categorical_features:
+        if feature in label_encoders:
+            processed_df[feature] = label_encoders[feature].transform(processed_df[feature])
 
-    # Transform the relevant columns
-    encoded_features = onehot_encoder.transform(processed_df[columns_to_onehot_encode]).toarray()
-
-    # Create a DataFrame with encoded features
-    # Get feature names from the loaded onehot_encoder
-    encoded_feature_names = onehot_encoder.get_feature_names_out(columns_to_onehot_encode)
-    encoded_df = pd.DataFrame(encoded_features, columns=encoded_feature_names, index=processed_df.index)
-
-    # Drop original One-Hot encoded columns
-    processed_df = processed_df.drop(columns=columns_to_onehot_encode)
-
-    # Concatenate processed_df with encoded_df
-    processed_df = pd.concat([processed_df, encoded_df], axis=1)
-
-    # Recreate this list based on your preprocessed training data's columns
-    processed_feature_columns_order = [
-        'Age', 'Gender', 'Protein1', 'Protein2', 'Protein3', 'Protein4', 'Tumour_Stage',
-        'ER status', 'PR status', 'HER2 status',
-        'Histology_Infiltrating Ductal Carcinoma', 'Histology_Infiltrating Lobular Carcinoma', 'Histology_Mucinous Carcinoma',
-        'Surgery_type_Lumpectomy', 'Surgery_type_Modified Radical Mastectomy', 'Surgery_type_Other', 'Surgery_type_Simple Mastectomy'
-    ]
-
-    # Filter and reorder columns to match processed_feature_columns_order
-    # Use .reindex(columns=...) to handle potential missing columns (shouldn't happen if preprocessing is consistent)
-    processed_df = processed_df.reindex(columns=processed_feature_columns_order, fill_value=0)
-
-
+    # Scale numerical features
+    processed_df[numerical_features] = scaler.transform(processed_df[numerical_features])
+    
     return processed_df
 
 def prediction_page():
     st.title("Prediksi Kelangsungan Hidup Pasien Kanker Payudara")
     st.write("Masukkan data pasien di bawah ini:")
 
-    # Input fields for features
-    age = st.number_input("Age", min_value=1, max_value=120, value=50)
-    gender = st.selectbox("Gender", ["FEMALE", "MALE"])
-    protein1 = st.number_input("Protein1", value=1.0)
-    protein2 = st.number_input("Protein2", value=1.0)
-    protein3 = st.number_input("Protein3", value=1.0)
-    protein4 = st.number_input("Protein4", value=1.0)
-    tumour_stage = st.selectbox("Tumour Stage", ["I", "II", "III"])
-    histology = st.selectbox("Histology", ["Infiltrating Ductal Carcinoma", "Infiltrating Lobular Carcinoma", "Mucinous Carcinoma"])
-    er_status = st.selectbox("ER status", ["Positive", "Negative"])
-    pr_status = st.selectbox("PR status", ["Positive", "Negative"])
-    her2_status = st.selectbox("HER2 status", ["Positive", "Negative"])
-    surgery_type = st.selectbox("Surgery type", ["Lumpectomy", "Simple Mastectomy", "Modified Radical Mastectomy", "Other"])
+    inputs = {}
+    
+    # --- Numerical Features ---
+    inputs['Age at Diagnosis'] = st.sidebar.number_input("Age at Diagnosis", min_value=20, max_value=100, value=60)
+    inputs['Cohort'] = st.sidebar.number_input("Cohort", min_value=1900, max_value=2100, value=2000)
+    inputs['Neoplasm Histologic Grade'] = st.sidebar.number_input("Neoplasm Histologic Grade", min_value=1, max_value=5, value=2)
+    inputs['Lymph nodes examined positive'] = st.sidebar.number_input("Positive Lymph Nodes", min_value=0, max_value=50, value=0)
+    inputs['Mutation Count'] = st.sidebar.number_input("Mutation Count", min_value=0, max_value=100, value=5)
+    inputs['Nottingham prognostic index'] = st.sidebar.number_input("Nottingham Prognostic Index", min_value=1.0, max_value=10.0, value=3.0, step=0.1)
+    inputs['Overall Survival (Months)'] = st.sidebar.number_input("Overall Survival (Months)", min_value=0, max_value=300, value=100)
+    inputs['Tumor Size'] = st.sidebar.number_input("Tumor Size (mm)", min_value=1, max_value=200, value=30)
+    inputs['Tumor Stage'] = st.sidebar.number_input("Tumor Stage (angka)", min_value=0.0, max_value=10.0, value=1.0, step=0.1)
 
-    # Create a dictionary from input values
-    input_data = {
-        'Age': age,
-        'Gender': gender,
-        'Protein1': protein1,
-        'Protein2': protein2,
-        'Protein3': protein3,
-        'Protein4': protein4,
-        'Tumour_Stage': tumour_stage,
-        'Histology': histology,
-        'ER status': er_status,
-        'PR status': pr_status,
-        'HER2 status': her2_status,
-        'Surgery_type': surgery_type
-    }
+    # --- Categorical Features ---
+    inputs['Type of Breast Surgery'] = st.sidebar.selectbox(
+        "Breast Surgery Type", ['Mastectomy', 'Breast Conserving']
+    )
+    inputs['Cancer Type Detailed'] = st.sidebar.selectbox(
+        "Cancer Type Detailed", ['Ductal/NST', 'Lobular', 'Other']
+    )
+    inputs['Cellularity'] = st.sidebar.selectbox("Cellularity", ['High', 'Moderate', 'Low'])
+    inputs['Chemotherapy'] = st.sidebar.selectbox("Chemotherapy", ['No', 'Yes'])
+    inputs['Pam50 + Claudin-low subtype'] = st.sidebar.selectbox(
+        "PAM50 Subtype", ['claudin-low', 'LumA', 'LumB', 'Normal', 'Her2', 'Basal']
+    )
+    inputs['ER status measured by IHC'] = st.sidebar.selectbox(
+        "ER status measured by IHC", ['Positive', 'Negative']
+    )
+    inputs['ER Status'] = st.sidebar.selectbox("ER Status", ['Positive', 'Negative'])
+    inputs['HER2 status measured by SNP6'] = st.sidebar.selectbox(
+        "HER2 status measured by SNP6", ['Negative', 'Positive']
+    )
+    inputs['HER2 Status'] = st.sidebar.selectbox("HER2 Status", ['Negative', 'Positive'])
+    inputs['Tumor Other Histologic Subtype'] = st.sidebar.selectbox(
+        "Other Histologic Subtype", ['None', 'Other Subtype']  # Ganti jika tahu isi yang valid
+    )
+    inputs['Hormone Therapy'] = st.sidebar.selectbox("Hormone Therapy", ['Yes', 'No'])
+    inputs['Inferred Menopausal State'] = st.sidebar.selectbox(
+        "Menopausal State", ['Post', 'Pre']
+    )
+    inputs['Integrative Cluster'] = st.sidebar.selectbox(
+        "Integrative Cluster", ['IntClust 1', 'IntClust 2', 'IntClust 3', 'IntClust 4', 'IntClust 5', 'IntClust 6', 'IntClust 7', 'IntClust 8', 'IntClust 9', 'IntClust 10']
+    )
+    inputs['Primary Tumor Laterality'] = st.sidebar.selectbox(
+        "Primary Tumor Laterality", ['Left', 'Right']
+    )
+    inputs['PR Status'] = st.sidebar.selectbox("PR Status", ['Negative', 'Positive'])
+    inputs['Radio Therapy'] = st.sidebar.selectbox("Radio Therapy", ['Yes', 'No'])
+    inputs['Relapse Free Status'] = st.sidebar.selectbox(
+        "Relapse Free Status", ['Relapse Free Status:1', 'Relapse Free Status:0']
+    )
+    inputs['3-Gene classifier subtype'] = st.sidebar.selectbox(
+        "3-Gene Subtype", ['ER-/HER2-', 'ER+/HER2- High Prolif', 'ER+/HER2- Low Prolif', 'HER2+']
+    )
 
     # Convert dictionary to DataFrame
-    input_df = pd.DataFrame([input_data])
-
-    # This helps in the preprocessing step.
-    for col in feature_columns_order:
-        if col not in input_df.columns and col != 'Patient_Status':
-             # You might need to add default values based on your training data's mean/mode
-             # For simplicity, we'll add them with placeholder values
-            if col in ['Protein1', 'Protein2', 'Protein3', 'Protein4']:
-                 input_df[col] = 0.0 # Example default for numerical
-            else:
-                 input_df[col] = 'Unknown' # Example default for categorical
-
-    # Reorder columns to match the expected input format before preprocessing
-    input_df = input_df[[col for col in feature_columns_order if col != 'Patient_Status']]
+    input_df = pd.DataFrame([inputs])
 
     # Preprocess the input data
     processed_input_df = preprocess_input(input_df)
 
     st.subheader("Pilih Model untuk Prediksi:")
-    selected_model = st.selectbox("Model", ["SVM 82%", "Decision Tree 74%", "Random Forest 82%", "XGBoost 78%"])
+    selected_model = st.selectbox("Model", ["SVM 94%", "Decision Tree 91%", "Random Forest 94%", "XGBoost 93%"])
 
     if st.button("Prediksi"):
-        if selected_model == "SVM 82%":
+        if selected_model == "SVM 94%":
             prediction = best_svm_model.predict(processed_input_df)
-        elif selected_model == "Decision Tree 74%":
+        elif selected_model == "Decision Tree 91%":
             prediction = best_dt_model.predict(processed_input_df)
-        elif selected_model == "Random Forest 82%":
+        elif selected_model == "Random Forest 94%":
             prediction = best_rf_model.predict(processed_input_df)
-        elif selected_model == "XGBoost 78%":
+        elif selected_model == "XGBoost 93%":
             prediction = best_xgb_model.predict(processed_input_df)
 
         prediction_label = le_target.inverse_transform(prediction)[0]
