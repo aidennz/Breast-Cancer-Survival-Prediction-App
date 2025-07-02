@@ -192,7 +192,9 @@ def prediction_page():
     inputs['Overall Survival (Months)'] = st.number_input("Overall Survival (Months)", min_value=0, max_value=400, value=100, step=1)
     inputs['PR Status'] = st.selectbox("PR Status", ['Negative', 'Positive'])
     inputs['Radio Therapy'] = st.selectbox("Radio Therapy", ['Yes', 'No'])
-    inputs['Relapse Free Status'] = st.selectbox("Relapse Free Status", ['Not Recurred', 'Recurred'])
+    inputs['Relapse Free Status'] = st.selectbox(
+        "Relapse Free Status", ['Not Recurred', 'Recurred']
+    )
     inputs['3-Gene classifier subtype'] = st.selectbox(
         "3-Gene Subtype", ['ER-/HER2-', 'ER+/HER2- High Prolif', 'ER+/HER2- Low Prolif', 'HER2+']
     )
