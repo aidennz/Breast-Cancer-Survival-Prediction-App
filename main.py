@@ -175,7 +175,7 @@ def prediction_page():
         "PAM50 Subtype", ['claudin-low', 'LumA', 'LumB', 'Normal', 'Her2', 'Basal', 'NC']
     )
     inputs['ER status measured by IHC'] = st.selectbox(
-        "ER status measured by IHC", ['Positive', 'Negative']
+        "ER status measured by IHC", ['Positve', 'Negative']
     )
     inputs['ER Status'] = st.selectbox("ER Status", ['Positive', 'Negative'])
     inputs['HER2 status measured by SNP6'] = st.selectbox(
