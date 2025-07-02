@@ -152,55 +152,55 @@ def prediction_page():
     inputs = {}
     
     # --- Numerical Features ---
-    inputs['Age at Diagnosis'] = st.sidebar.number_input("Age at Diagnosis", min_value=20.0, max_value=100.0, value=60.0, step=1)
-    inputs['Cohort'] = st.sidebar.number_input("Cohort", min_value=1.0, max_value=5.0, value=3.0, step=1)
-    inputs['Neoplasm Histologic Grade'] = st.sidebar.number_input("Neoplasm Histologic Grade", min_value=1.0, max_value=5.0, value=2.0, step=1)
-    inputs['Lymph nodes examined positive'] = st.sidebar.number_input("Positive Lymph Nodes", min_value=0.0, max_value=50.0, value=0.0, step=1)
-    inputs['Mutation Count'] = st.sidebar.number_input("Mutation Count", min_value=1.0, max_value=100.0, value=5.0, step=1)
-    inputs['Nottingham prognostic index'] = st.sidebar.number_input("Nottingham Prognostic Index", min_value=1.0, max_value=10.0, value=3.0, step=0.1)
-    inputs['Overall Survival (Months)'] = st.sidebar.number_input("Overall Survival (Months)", min_value=0, max_value=400, value=100, step=1)
-    inputs['Tumor Size'] = st.sidebar.number_input("Tumor Size (mm)", min_value=1.0, max_value=200.0, value=30.0, step=1)
-    inputs['Tumor Stage'] = st.sidebar.number_input("Tumor Stage (angka)", min_value=0.0, max_value=4.0, value=1.0, step=1)
+    inputs['Age at Diagnosis'] = st.number_input("Age at Diagnosis", min_value=20.0, max_value=100.0, value=60.0, step=1)
+    inputs['Cohort'] = st.number_input("Cohort", min_value=1.0, max_value=5.0, value=3.0, step=1)
+    inputs['Neoplasm Histologic Grade'] = st.number_input("Neoplasm Histologic Grade", min_value=1.0, max_value=5.0, value=2.0, step=1)
+    inputs['Lymph nodes examined positive'] = st.number_input("Positive Lymph Nodes", min_value=0.0, max_value=50.0, value=0.0, step=1)
+    inputs['Mutation Count'] = st.number_input("Mutation Count", min_value=1.0, max_value=100.0, value=5.0, step=1)
+    inputs['Nottingham prognostic index'] = st.number_input("Nottingham Prognostic Index", min_value=1.0, max_value=10.0, value=3.0, step=0.1)
+    inputs['Overall Survival (Months)'] = st.number_input("Overall Survival (Months)", min_value=0, max_value=400, value=100, step=1)
+    inputs['Tumor Size'] = st.number_input("Tumor Size (mm)", min_value=1.0, max_value=200.0, value=30.0, step=1)
+    inputs['Tumor Stage'] = st.number_input("Tumor Stage (angka)", min_value=0.0, max_value=4.0, value=1.0, step=1)
 
     # --- Categorical Features ---
-    inputs['Type of Breast Surgery'] = st.sidebar.selectbox(
+    inputs['Type of Breast Surgery'] = st.selectbox(
         "Breast Surgery Type", ['Mastectomy', 'Breast Conserving']
     )
-    inputs['Cancer Type Detailed'] = st.sidebar.selectbox(
+    inputs['Cancer Type Detailed'] = st.selectbox(
         "Cancer Type Detailed", ['Breast Invasive Ductal Carcinoma', 'Breast Mixed Ductal and Lobular Carcinoma', 'Breast Invasive Lobular Carcinoma', 'Invasive Breast Carcinoma', 'Breast Invasive Mixed Mucinous Carcinoma', 'Breast Angiosarcoma', 'Breast', 'Metaplastic Breast Cancer']
     )
-    inputs['Cellularity'] = st.sidebar.selectbox("Cellularity", ['High', 'Moderate', 'Low'])
-    inputs['Chemotherapy'] = st.sidebar.selectbox("Chemotherapy", ['No', 'Yes'])
-    inputs['Pam50 + Claudin-low subtype'] = st.sidebar.selectbox(
+    inputs['Cellularity'] = st.selectbox("Cellularity", ['High', 'Moderate', 'Low'])
+    inputs['Chemotherapy'] = st.selectbox("Chemotherapy", ['No', 'Yes'])
+    inputs['Pam50 + Claudin-low subtype'] = st.selectbox(
         "PAM50 Subtype", ['claudin-low', 'LumA', 'LumB', 'Normal', 'Her2', 'Basal', 'NC']
     )
-    inputs['ER status measured by IHC'] = st.sidebar.selectbox(
+    inputs['ER status measured by IHC'] = st.selectbox(
         "ER status measured by IHC", ['Positive', 'Negative']
     )
-    inputs['ER Status'] = st.sidebar.selectbox("ER Status", ['Positive', 'Negative'])
-    inputs['HER2 status measured by SNP6'] = st.sidebar.selectbox(
+    inputs['ER Status'] = st.selectbox("ER Status", ['Positive', 'Negative'])
+    inputs['HER2 status measured by SNP6'] = st.selectbox(
         "HER2 status measured by SNP6", ['Neutral', 'Loss', 'Gain', 'Undef']
     )
-    inputs['HER2 Status'] = st.sidebar.selectbox("HER2 Status", ['Negative', 'Positive'])
-    inputs['Tumor Other Histologic Subtype'] = st.sidebar.selectbox(
+    inputs['HER2 Status'] = st.selectbox("HER2 Status", ['Negative', 'Positive'])
+    inputs['Tumor Other Histologic Subtype'] = st.selectbox(
         "Other Histologic Subtype", ['Ductal/NST', 'Mixed', 'Lobular', 'Tubular/ cribriform', 'Mucinous', 'Medullary', 'Other', 'Metaplastic']
     )
-    inputs['Hormone Therapy'] = st.sidebar.selectbox("Hormone Therapy", ['Yes', 'No'])
-    inputs['Inferred Menopausal State'] = st.sidebar.selectbox(
+    inputs['Hormone Therapy'] = st.selectbox("Hormone Therapy", ['Yes', 'No'])
+    inputs['Inferred Menopausal State'] = st.selectbox(
         "Menopausal State", ['Post', 'Pre']
     )
-    inputs['Integrative Cluster'] = st.sidebar.selectbox(
+    inputs['Integrative Cluster'] = st.selectbox(
         "Integrative Cluster", ['4ER+', '3', '9', '7', '4ER-', '5', '8', '10', '1', '2', '6']
     )
-    inputs['Primary Tumor Laterality'] = st.sidebar.selectbox(
+    inputs['Primary Tumor Laterality'] = st.selectbox(
         "Primary Tumor Laterality", ['Right', 'Left']
     )
-    inputs['PR Status'] = st.sidebar.selectbox("PR Status", ['Negative', 'Positive'])
-    inputs['Radio Therapy'] = st.sidebar.selectbox("Radio Therapy", ['Yes', 'No'])
-    inputs['Relapse Free Status'] = st.sidebar.selectbox(
+    inputs['PR Status'] = st.selectbox("PR Status", ['Negative', 'Positive'])
+    inputs['Radio Therapy'] = st.selectbox("Radio Therapy", ['Yes', 'No'])
+    inputs['Relapse Free Status'] = st.selectbox(
         "Relapse Free Status", ['Not Recurred', 'Recurred']
     )
-    inputs['3-Gene classifier subtype'] = st.sidebar.selectbox(
+    inputs['3-Gene classifier subtype'] = st.selectbox(
         "3-Gene Subtype", ['ER-/HER2-', 'ER+/HER2- High Prolif', 'ER+/HER2- Low Prolif', 'HER2+']
     )
 
