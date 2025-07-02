@@ -172,7 +172,7 @@ def prediction_page():
     inputs['Cellularity'] = st.sidebar.selectbox("Cellularity", ['High', 'Moderate', 'Low'])
     inputs['Chemotherapy'] = st.sidebar.selectbox("Chemotherapy", ['No', 'Yes'])
     inputs['Pam50 + Claudin-low subtype'] = st.sidebar.selectbox(
-        "PAM50 Subtype", ['claudin-low', 'LumA', 'LumB', 'Normal', 'Her2', 'Basal', 'NC]
+        "PAM50 Subtype", ['claudin-low', 'LumA', 'LumB', 'Normal', 'Her2', 'Basal', 'NC']
     )
     inputs['ER status measured by IHC'] = st.sidebar.selectbox(
         "ER status measured by IHC", ['Positive', 'Negative']
