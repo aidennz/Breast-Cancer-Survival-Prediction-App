@@ -120,17 +120,14 @@ categorical_features = [
 def preprocess_input(input_df):
     processed_df = input_df.copy()
     
-    # Label encode categorical features and scale numerical features
-    processed_df['Age At Diagnosis'] = scaler.transform(processed_df['Age At Diagnosis'])
+    # Label encode categorical features
     processed_df['Type of Breast Surgery'] = label_encoder_type_of_breast_surgery.transform(processed_df['Type of Breast Surgery'])
     processed_df['Cancer Type Detailed'] = label_encoder_cancer_type.transform(processed_df['Cancer Type Detailed'])
     processed_df['Cellularity'] = label_encoder_cellularity.transform(processed_df['Cellularity'])
     processed_df['Chemotherapy'] = label_encoder_chemotherapy.transform(processed_df['Chemotherapy'])
     processed_df['Pam50 + Claudin-low subtype'] = label_encoder_pam50.transform(processed_df['Pam50 + Claudin-low subtype'])
-    processed_df['Cohort'] = scaler.transform(processed_df['Cohort'])
     processed_df['ER status measured by IHC'] = label_encoder_er_status_by_ihc.transform(processed_df['ER status measured by IHC'])
     processed_df['ER Status'] = label_encoder_er_status.transform(processed_df['ER Status'])
-    processed_df['Neoplasm Histologic Grade'] = scaler.transform(processed_df['Neoplasm Histologic Grade'])
     processed_df['HER2 status measured by SNP6'] = label_encoder_her2_status_by_snp6.transform(processed_df['HER2 status measured by SNP6'])
     processed_df['HER2 Status'] = label_encoder_her2_status.transform(processed_df['HER2 Status'])
     processed_df['Tumor Other Histologic Subtype'] = label_encoder_tumor_other.transform(processed_df['Tumor Other Histologic Subtype'])
@@ -138,18 +135,13 @@ def preprocess_input(input_df):
     processed_df['Inferred Menopausal State'] = label_encoder_inferred_menopausal.transform(processed_df['Inferred Menopausal State'])
     processed_df['Integrative Cluster'] = label_encoder_intergrative_cluster.transform(processed_df['Integrative Cluster'])
     processed_df['Primary Tumor Laterality'] = label_encoder_primary_tumor.transform(processed_df['Primary Tumor Laterality'])
-    processed_df['Lymph nodes examined positive'] = scaler.transform(processed_df['Lymph nodes examined positive'])
-    processed_df['Mutation Count'] = scaler.transform(processed_df['Mutation Count'])
-    processed_df['Nottingham prognostic index'] = scaler.transform(processed_df['Nottingham prognostic index'])
-    processed_df['Overall Survival (Months)'] = scaler.transform(processed_df['Overall Survival (Months)'])
     processed_df['PR Status'] = label_encoder_pr_status.transform(processed_df['PR Status'])
     processed_df['Radio Therapy'] = label_encoder_radio_therapy.transform(processed_df['Radio Therapy'])
     processed_df['Relapse Free Status'] = label_encoder_relapse_free.transform(processed_df['Relapse Free Status'])
     processed_df['3-Gene classifier subtype'] = label_encoder_3Gene.transform(processed_df['3-Gene classifier subtype'])
-    processed_df['Tumor Size'] = scaler.transform(processed_df['Tumor Size'])
-    processed_df['Tumor Stage'] = scaler.transform(processed_df['Tumor Stage'])
 
-    # processed_df[numerical_features] = scaler.transform(processed_df[numerical_features])
+    # Scale numerical features
+    processed_df[numerical_features] = scaler.transform(processed_df[numerical_features])
     
     return processed_df
 
